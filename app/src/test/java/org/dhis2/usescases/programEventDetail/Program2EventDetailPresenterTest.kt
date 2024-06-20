@@ -41,7 +41,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
-class ProgramEventDetailPresenterTest {
+class Program2EventDetailPresenterTest {
     @Rule
     @JvmField
     var instantExecutorRule = InstantTaskExecutorRule()

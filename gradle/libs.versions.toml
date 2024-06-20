@@ -95,6 +95,8 @@ rxrelay = "2.1.1"
 preference_ktx = "1.2.1"
 uiautomator = "2.2.0"
 maplibre = "10.2.0"
+kotlinVersion = "1.9.21"
+firebaseCrashlyticsBuildtools = "3.0.0"
 [libraries]
 gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
 kotlinPlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -228,8 +230,10 @@ maps-annotationPlugin = { group = "com.mapbox.mapboxsdk", name = "mapbox-android
 dispatcher-dispatchBOM = { group = "com.rickbusarow.dispatch", name = "dispatch-bom", version = "1.0.0-beta10" } #TODO: I don't know how or why we are using this
 dispatcher-dispatchCore = { group = "com.rickbusarow.dispatch", name = "dispatch-core" }
 dispatcher-dispatchEspresso = { group = "com.rickbusarow.dispatch", name = "dispatch-android-espresso", version = "1.0.0-beta10" }
-deprecated-autoValueParcel = { group = "com.ryanharter.auto.value", name = "auto-value-parcel", version.ref = "autovalueparcel" } #TODO: Remove alongside AutoValue
+deprecated-autoValueParcel = { group = "com.ryanharter.auto.value", name = "auto-value-parcel", version.ref = "autovalueparcel" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" } #TODO: Remove alongside AutoValue
 [plugins]
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 
 [bundles]
 uicomponents-implementation = ["androidx-coreKtx", "androidx-appcompat", "androidx-activity-compose", "androidx-material3", "google-material", "lottie-compose", "dhis2-mobile-designsystem"]

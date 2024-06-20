@@ -20,7 +20,7 @@ class ProgramViewModelMapper() {
             uid = program.uid(),
             title = program.displayName()!!,
             metadataIconData = metadataIconData,
-            count = recordCount,
+                        count = recordCount,
             type = if (program.trackedEntityType() != null) {
                 program.trackedEntityType()!!.uid()
             } else {

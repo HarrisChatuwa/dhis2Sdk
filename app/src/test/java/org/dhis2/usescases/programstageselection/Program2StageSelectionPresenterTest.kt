@@ -64,7 +64,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
-class ProgramStageSelectionPresenterTest {
+class Program2StageSelectionPresenterTest {
 
     private lateinit var presenter: ProgramStageSelectionPresenter
 

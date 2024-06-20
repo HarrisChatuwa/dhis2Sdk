@@ -18,7 +18,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.util.Date
 
-class TeiProgramListRepositoryImplTest {
+class TeiProgramListRepositoryImplTest2 {
 
     private lateinit var teiProgramRepository: TeiProgramListRepository
     private val d2: D2 = Mockito.mock(D2::class.java, Mockito.RETURNS_DEEP_STUBS)

@@ -242,8 +242,8 @@
     <string name="settingsSms_descr">Check and edit parameters related to the sms gateway</string>
     <string name="settingsCheckVersion">Software update</string>
     <string name="settingsCheckVersionMessage">Software</string>
-    <string name="settingsExportDB">Export database</string>
-    <string name="settingsExportDBMessage">Export yout database and share it with your administrator</string>
+    <string name="settingsExportDB">Export TrackerApp Data</string>
+    <string name="settingsExportDBMessage">Export your trackerapp data and share it with your administrator</string>
     <!--endregion-->
 
     <string name="enrollmment_date">Enrollment date</string>
@@ -970,4 +970,6 @@
     <string name="database_export_downloaded">Database downloaded</string>
     <string name="importing_database">Importing database</string>
     <string name="re_open_to_edit">Re-open form to edit</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

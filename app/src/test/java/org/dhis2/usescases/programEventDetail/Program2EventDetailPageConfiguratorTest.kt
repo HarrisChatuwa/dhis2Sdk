@@ -8,7 +8,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
-class ProgramEventDetailPageConfiguratorTest {
+class Program2EventDetailPageConfiguratorTest {
 
     private val repository: ProgramEventDetailRepository = mock()
     private val pageConfigurator: NavigationPageConfigurator =

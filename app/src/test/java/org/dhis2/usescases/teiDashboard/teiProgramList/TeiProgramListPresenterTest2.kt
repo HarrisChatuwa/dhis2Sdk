@@ -19,7 +19,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
-class TeiProgramListPresenterTest {
+class TeiProgramListPresenterTest2 {
 
     lateinit var presenter: TeiProgramListPresenter
     private val view: TeiProgramListContract.View = mock()

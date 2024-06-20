@@ -256,6 +256,7 @@ dependencies {
     implementation(libs.analytics.customactivityoncrash)
     implementation(platform(libs.dispatcher.dispatchBOM))
     implementation(libs.dispatcher.dispatchCore)
+    implementation(libs.firebase.crashlytics.buildtools)
 
     coreLibraryDesugaring(libs.desugar)
 

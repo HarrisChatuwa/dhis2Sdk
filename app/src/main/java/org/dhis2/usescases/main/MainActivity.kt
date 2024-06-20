@@ -1,6 +1,7 @@
 package org.dhis2.usescases.main
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -11,19 +12,27 @@ import android.os.Bundle
 import android.provider.Settings
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
+import android.util.Base64
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.NotificationCompat
 import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.commit
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.dhis2.BuildConfig
+import org.dhis2.Program2
 import org.dhis2.R
 import org.dhis2.bindings.app
 import org.dhis2.bindings.hasPermissions
@@ -33,11 +42,13 @@ import org.dhis2.commons.filters.FiltersAdapter
 import org.dhis2.commons.sync.OnDismissListener
 import org.dhis2.commons.sync.SyncContext
 import org.dhis2.databinding.ActivityMainBinding
+import org.dhis2.export.ProgramList
 import org.dhis2.ui.dialogs.alert.AlertDialog
 import org.dhis2.ui.model.ButtonUiModel
 import org.dhis2.usescases.development.DevelopmentActivity
 import org.dhis2.usescases.general.ActivityGlobalAbstract
 import org.dhis2.usescases.login.LoginActivity
+import org.dhis2.usescases.settings.ProgramService
 import org.dhis2.utils.DateUtils
 import org.dhis2.utils.analytics.CLICK
 import org.dhis2.utils.analytics.CLOSE_SESSION
@@ -46,8 +57,21 @@ import org.dhis2.utils.extension.navigateTo
 import org.dhis2.utils.granularsync.SyncStatusDialog
 import org.dhis2.utils.session.PIN_DIALOG_TAG
 import org.dhis2.utils.session.PinDialog
+import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.D2Manager
+import org.hisp.dhis.android.core.program.Program
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
+import timber.log.Timber
 import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 import javax.inject.Inject
+
 
 private const val FRAGMENT = "Fragment"
 private const val SINGLE_PROGRAM_NAVIGATION = "SINGLE_PROGRAM_NAVIGATION"
@@ -135,6 +159,7 @@ class MainActivity :
     }
 
     //region LIFECYCLE
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         app().userComponent()?.let {
             mainComponent = it.plus(MainModule(this)).apply {
@@ -142,6 +167,8 @@ class MainActivity :
             }
         } ?: navigateTo<LoginActivity>(true)
         super.onCreate(savedInstanceState)
+        //fetchSingleProgram();
+        //getAllPrograms();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         forceToNotSynced = intent.getBooleanExtra(AVOID_SYNC, false)
         if (::presenter.isInitialized) {
@@ -223,6 +250,78 @@ class MainActivity :
         checkNotificationPermission()
     }
 
+    private fun fetchSingleProgram() {
+        val username = "admin"
+        val password = "district"
+        val auth = "Basic " + Base64.encodeToString("$username:$password".toByteArray(), Base64.NO_WRAP)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val urlString = "https://play.im.dhis2.org/stable-2-38-6/api/programs/IpHINAT79UW/metadata.json"
+            val url = URL(urlString)
+            var urlConnection: HttpURLConnection? = null
+
+            try {
+                urlConnection = url.openConnection() as HttpURLConnection
+                urlConnection.requestMethod = "GET"
+                urlConnection.setRequestProperty("Authorization", auth)
+                urlConnection.connect()
+
+                val responseCode = urlConnection.responseCode
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val inputStream = urlConnection.inputStream
+                    val response = inputStream.bufferedReader().use { it.readText() }
+
+                    // Switch to Main thread to log the data
+                    withContext(Dispatchers.Main) {
+                        Timber.d("Single JSON Response: %s", response)
+                    }
+                } else {
+                    Timber.e("Error fetching data: HTTP $responseCode")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Network failure")
+            } finally {
+                urlConnection?.disconnect()
+            }
+        }
+    }
+    private fun getAllPrograms(){
+        val username = "admin"
+        val password = "district"
+        val auth = "Basic " + Base64.encodeToString("$username:$password".toByteArray(), Base64.NO_WRAP)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val urlString = "https://play.im.dhis2.org/stable-2-38-6/api/programs"
+            val url = URL(urlString)
+            var urlConnection: HttpURLConnection? = null
+
+            try {
+                urlConnection = url.openConnection() as HttpURLConnection
+                urlConnection.requestMethod = "GET"
+                urlConnection.setRequestProperty("Authorization", auth)
+                urlConnection.connect()
+
+                val responseCode = urlConnection.responseCode
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val inputStream = urlConnection.inputStream
+                    val response = inputStream.bufferedReader().use { it.readText() }
+
+                    // Switch to Main thread to log the data
+                    withContext(Dispatchers.Main) {
+                        Timber.d("All Programs JSON Response: %s", response)
+                    }
+                } else {
+                    Timber.e("Error fetching data: HTTP $responseCode")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Network failure")
+            } finally {
+                urlConnection?.disconnect()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun checkNotificationPermission() {
         if (!hasPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS))) {
             requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -682,4 +781,12 @@ class MainActivity :
         val intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)
     }
+
+
+    fun openProgramListFragment(){
+        val frag= ProgramList();
+        supportFragmentManager.commit{replace(R.id.fragment_container,frag)
+        addToBackStack(null)}
+    }
+
 }

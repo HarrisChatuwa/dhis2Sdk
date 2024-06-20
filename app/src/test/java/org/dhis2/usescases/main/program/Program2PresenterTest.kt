@@ -23,7 +23,7 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import java.util.concurrent.TimeUnit
 
-class ProgramPresenterTest {
+class Program2PresenterTest {
 
     private lateinit var presenter: ProgramPresenter
 

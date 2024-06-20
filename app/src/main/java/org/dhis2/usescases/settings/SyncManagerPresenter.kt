@@ -46,11 +46,15 @@ import org.dhis2.utils.analytics.CLICK
 import org.dhis2.utils.analytics.SYNC_DATA_NOW
 import org.dhis2.utils.analytics.SYNC_METADATA_NOW
 import org.hisp.dhis.android.core.D2
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.settings.LimitScope
+import retrofit2.http.GET
 import timber.log.Timber
 import java.util.Locale
 import kotlin.coroutines.CoroutineContext
+
 
 class SyncManagerPresenter internal constructor(
     private val d2: D2,
@@ -68,6 +72,7 @@ class SyncManagerPresenter internal constructor(
     private val versionRepository: VersionRepository,
     private val dispatcherProvider: DispatcherProvider,
 ) : CoroutineScope {
+
 
     private var job = Job()
     override val coroutineContext: CoroutineContext
@@ -476,13 +481,20 @@ class SyncManagerPresenter internal constructor(
         )
     }
 
-    fun onExportAndShareDB() {
-        exportDB(download = true, share = false)
-    }
+        fun onExportAndShareDB() {
+            exportDB(download = true, share = false)
+        }
 
     fun onExportAndDownloadDB() {
         exportDB(download = false, share = true)
     }
+
+
+
+//    fun getProgram(){
+//        val myService: MyService = d2().retrofit().create(MyService::class.java)
+//        val userPayload: Single<Payload<User?>?>? = myService.getProgram
+//    }
 
     private fun exportDB(download: Boolean, share: Boolean) {
         _exporting.value = true
@@ -503,4 +515,6 @@ class SyncManagerPresenter internal constructor(
     fun onExportEnd() {
         _exporting.postValue(false)
     }
+
+
 }

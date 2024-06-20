@@ -16,7 +16,7 @@ import org.hisp.dhis.mobile.ui.designsystem.component.internal.ImageCardData
 import org.junit.Rule
 import org.junit.Test
 
-class ProgramUiTest {
+class Program2UiTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()

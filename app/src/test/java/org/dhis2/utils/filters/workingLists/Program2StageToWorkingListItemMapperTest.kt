@@ -9,7 +9,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class ProgramStageToWorkingListItemMapperTest {
+class Program2StageToWorkingListItemMapperTest {
 
     private lateinit var mapper: ProgramStageToWorkingListItemMapper
 

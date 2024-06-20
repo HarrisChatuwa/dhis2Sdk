@@ -37,7 +37,7 @@ import org.mockito.kotlin.doReturnConsecutively
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
-class ProgramRepositoryImplTest {
+class Program2RepositoryImplTest {
     @Rule
     @JvmField
     var instantExecutorRule = InstantTaskExecutorRule()

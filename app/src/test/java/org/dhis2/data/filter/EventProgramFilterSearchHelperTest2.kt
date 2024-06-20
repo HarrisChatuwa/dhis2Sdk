@@ -28,7 +28,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.util.Date
 
-class EventProgramFilterSearchHelperTest {
+class EventProgramFilterSearchHelperTest2 {
 
     @Rule
     @JvmField

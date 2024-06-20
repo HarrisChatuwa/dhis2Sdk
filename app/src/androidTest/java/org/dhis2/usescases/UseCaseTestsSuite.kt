@@ -9,7 +9,7 @@ import org.dhis2.usescases.jira.JiraTest
 import org.dhis2.usescases.login.LoginTest
 import org.dhis2.usescases.main.MainTest
 import org.dhis2.usescases.pin.PinTest
-import org.dhis2.usescases.programevent.ProgramEventTest
+import org.dhis2.usescases.programevent.Program2EventTest
 import org.dhis2.usescases.searchte.SearchTETest
 import org.dhis2.usescases.settings.SettingsTest
 import org.dhis2.usescases.sync.SyncActivityTest
@@ -29,7 +29,7 @@ import org.junit.runners.Suite
     LoginTest::class,
     MainTest::class,
     PinTest::class,
-    ProgramEventTest::class,
+    Program2EventTest::class,
     SearchTETest::class,
     SettingsTest::class,
     SyncActivityTest::class,

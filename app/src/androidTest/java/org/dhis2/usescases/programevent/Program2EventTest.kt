@@ -15,7 +15,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ProgramEventTest : BaseTest() {
+class Program2EventTest : BaseTest() {
 
     private val antenatalCare = "lxAQ7Zs9VYR"
     private val informationCampaign = "q04UBOqq3rp"

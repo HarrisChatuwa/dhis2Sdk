@@ -21,7 +21,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.util.Date
 
-class ProgramEventMapperTest {
+class Program2EventMapperTest {
 
     private lateinit var mapper: ProgramEventMapper
 

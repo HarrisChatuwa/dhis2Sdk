@@ -17,7 +17,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
-class SettingsProgramPresenterTest {
+class SettingsProgramPresenterTest2 {
 
     lateinit var presenter: SettingsProgramPresenter
     private val view: ProgramSettingsView = mock()

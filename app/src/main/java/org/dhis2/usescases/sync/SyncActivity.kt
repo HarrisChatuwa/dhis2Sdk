@@ -5,6 +5,11 @@ import android.os.Bundle
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
 import androidx.work.WorkInfo
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.codec.binary.Base64
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.dhis2.App
 import org.dhis2.R
 import org.dhis2.bindings.Bindings
@@ -16,6 +21,9 @@ import org.dhis2.usescases.main.MainActivity
 import org.dhis2.utils.OnDialogClickListener
 import org.dhis2.utils.extension.navigateTo
 import org.dhis2.utils.extension.share
+import timber.log.Timber
+import java.net.HttpURLConnection
+import java.net.URL
 import javax.inject.Inject
 
 class SyncActivity : ActivityGlobalAbstract(), SyncView {
@@ -34,6 +42,7 @@ class SyncActivity : ActivityGlobalAbstract(), SyncView {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_synchronization)
         binding.presenter = presenter
+        //getAllProgrammes()
         presenter.sync()
     }
 
@@ -125,4 +134,42 @@ class SyncActivity : ActivityGlobalAbstract(), SyncView {
     override fun goToLogin() {
         navigateTo<LoginActivity>(true, flagsToApply = Intent.FLAG_ACTIVITY_NEW_TASK)
     }
+
+    fun getAllProgrammes(){
+            val username = "admin"
+            val password = "district"
+            val auth = "Basic " + android.util.Base64.encodeToString("$username:$password".toByteArray(), android.util.Base64.NO_WRAP)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val urlString = "https://play.im.dhis2.org/stable-2-38-6/api/programs"
+                val url = URL(urlString)
+                var urlConnection: HttpURLConnection? = null
+
+                try {
+                    urlConnection = url.openConnection() as HttpURLConnection
+                    urlConnection.requestMethod = "GET"
+                    urlConnection.setRequestProperty("Authorization", auth)
+                    urlConnection.connect()
+
+                    val responseCode = urlConnection.responseCode
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        val inputStream = urlConnection.inputStream
+                        val response = inputStream.bufferedReader().use { it.readText() }
+
+                        // Switch to Main thread to log the data
+                        withContext(Dispatchers.Main) {
+                            Timber.d("All Programs JSON Response: %s", response)
+                        }
+                    } else {
+                        Timber.e("Error fetching data: HTTP $responseCode")
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "Network failure")
+                } finally {
+                    urlConnection?.disconnect()
+                }
+            }
+        }
+
+
 }

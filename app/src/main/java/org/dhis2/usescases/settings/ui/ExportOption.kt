@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
@@ -38,12 +39,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import com.google.accompanist.themeadapter.material3.Mdc3Theme
 import com.google.android.material.composethemeadapter.MdcTheme
 import org.dhis2.R
 import org.dhis2.ui.dialogs.alert.Dhis2AlertDialogUi
 import org.dhis2.ui.model.ButtonUiModel
+import org.dhis2.usescases.main.MainActivity
 import org.hisp.dhis.mobile.ui.designsystem.component.Button
 import org.hisp.dhis.mobile.ui.designsystem.component.ButtonStyle
 import org.hisp.dhis.mobile.ui.designsystem.component.ProgressIndicator
@@ -55,8 +58,8 @@ fun ExportOption(
     onShare: () -> Unit,
     displayProgress: Boolean,
 ) {
-    val context = LocalContext.current
-
+    //val context = LocalContext.current
+    val context = LocalContext.current as? MainActivity
     var onPermissionGrantedCallback: () -> Unit = {}
     var showPermissionDialog by remember { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(
@@ -71,10 +74,12 @@ fun ExportOption(
 
     val permissionSettingLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                ) == PackageManager.PERMISSION_GRANTED
+            if (context?.let { it1 ->
+                        ContextCompat.checkSelfPermission(
+                                it1,
+                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        )
+                    } == PackageManager.PERMISSION_GRANTED
             ) {
                 onPermissionGrantedCallback()
             }
@@ -108,24 +113,30 @@ fun ExportOption(
                 Button(
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU ||
-                            ContextCompat.checkSelfPermission(
-                                context,
-                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            ) == PackageManager.PERMISSION_GRANTED
-                        ) {
-                            onDownload()
-                        } else {
-                            onPermissionGrantedCallback = onDownload
-                            launcher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        }
+
+                       // Toast.makeText(context,"Down btn clicked",Toast.LENGTH_SHORT).show()
+                        context?.openProgramListFragment()
+//                        var i=Intent(context, ProgramList::class.java)
+//                        context.startActivity(i)
+//
+//                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU ||
+//                            ContextCompat.checkSelfPermission(
+//                                context,
+//                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                            ) == PackageManager.PERMISSION_GRANTED
+//                        ) {
+//                            onDownload()
+//                        } else {
+//                            onPermissionGrantedCallback = onDownload
+//                            launcher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                        }
                     },
                     style = ButtonStyle.TEXT,
                     text = stringResource(id = R.string.download),
                     icon = {
                         Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_file_download),
-                            contentDescription = "Download",
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_settings_export),
+                            contentDescription = "Export",
                             tint = MaterialTheme.colors.primary,
                         )
                     },
@@ -135,10 +146,12 @@ fun ExportOption(
                     modifier = Modifier.weight(1f),
                     onClick = {
                         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU ||
-                            ContextCompat.checkSelfPermission(
-                                context,
-                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            ) == PackageManager.PERMISSION_GRANTED
+                            context?.let {
+                                ContextCompat.checkSelfPermission(
+                                        it,
+                                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                )
+                            } == PackageManager.PERMISSION_GRANTED
                         ) {
                             onShare()
                         } else {
@@ -181,12 +194,14 @@ fun ExportOption(
                 onPermissionGrantedCallback = {}
             },
             confirmButton = ButtonUiModel("Change permission") {
-                permissionSettingLauncher.launch(
-                    Intent(
-                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                        Uri.fromParts("package", context.packageName, null),
-                    ),
-                )
+                if (context != null) {
+                    permissionSettingLauncher.launch(
+                            Intent(
+                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", context.packageName, null),
+                            ),
+                    )
+                }
             },
         )
     }
